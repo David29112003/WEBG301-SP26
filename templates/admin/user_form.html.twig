@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block body %}
+
+<style>
+body {
+    background: #0f172a;
+    color: white;
+    font-family: Arial;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 12px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: none;
+}
+
+.avatar-preview {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.avatar-preview img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.flash {
+    padding: 10px;
+    margin-bottom: 15px;
+    background: red;
+    text-align: center;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #4f46e5;
+    border: none;
+    color: white;
+    border-radius: 8px;
+}
+</style>
+
+<div class="container">
+
+    <h2>Edit User</h2>
+
+    {% for message in app.flashes('error') %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+
+    <div class="avatar-preview">
+        <img id="avatarPreview"
+             src="{{ user.avatar ? asset('uploads/' ~ user.avatar) : 'https://via.placeholder.com/100' }}">
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+
+        <input name="name" value="{{ user.name }}" required>
+        <input name="email" value="{{ user.email }}" required>
+
+        <input name="stageName" value="{{ user.stageName }}">
+        <input name="genre" value="{{ user.genre }}">
+        <input type="number" name="price" value="{{ user.price }}">
+
+        <select name="role">
+            <option value="ROLE_DJ" {{ 'ROLE_DJ' in user.roles ? 'selected' }}>DJ</option>
+            <option value="ROLE_ADMIN" {{ 'ROLE_ADMIN' in user.roles ? 'selected' }}>Admin</option>
+        </select>
+
+        <input type="file" name="avatar" id="avatarInput">
+
+        <button type="submit">Save Changes</button>
+
+    </form>
+
+</div>
+
+<script>
+document.getElementById('avatarInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (file) {
+        document.getElementById('avatarPreview').src = URL.createObjectURL(file);
+    }
+});
+</script>
+
+{% endblock %}

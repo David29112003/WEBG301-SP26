@@ -1,0 +1,200 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<style>
+.wrapper { max-width: 1000px; margin: 40px auto; }
+.form-box { background: white; padding: 30px; border-radius: 12px; }
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.full { grid-column: 1 / 3; }
+
+.field { display: flex; flex-direction: column; }
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.error-input { border: 1px solid red; }
+
+.error {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.btn {
+    background: #6366f1;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    margin-top: 15px;
+}
+</style>
+
+<div class="wrapper">
+<div class="form-box">
+
+<h2>Register</h2>
+
+{# GLOBAL ERRORS #}
+{% if errors is defined and errors is not empty %}
+    <div style="color:red; margin-bottom:15px;">
+        {% for err in errors %}
+            <div>{{ err }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<form method="POST" action="{{ path('app_register') }}" enctype="multipart/form-data">
+
+<input type="hidden" name="_token" value="{{ csrf_token('register') }}">
+
+<div class="grid">
+
+{# NAME #}
+<div class="field full">
+    <input name="name" placeholder="Name" required
+           value="{{ old.name|default('') }}"
+           class="{{ errors.name is defined ? 'error-input' }}">
+    {% if errors.name is defined %}
+        <div class="error">{{ errors.name }}</div>
+    {% endif %}
+</div>
+
+{# EMAIL #}
+<div class="field full">
+    <input name="email" placeholder="Email" required
+           value="{{ old.email|default('') }}"
+           class="{{ errors.email is defined ? 'error-input' }}">
+    {% if errors.email is defined %}
+        <div class="error">{{ errors.email }}</div>
+    {% endif %}
+</div>
+
+{# PASSWORD #}
+<div class="field">
+    <input type="password" name="password" placeholder="Password" required
+           class="{{ errors.password is defined ? 'error-input' }}">
+    {% if errors.password is defined %}
+        <div class="error">{{ errors.password }}</div>
+    {% endif %}
+</div>
+
+{# CONFIRM PASSWORD #}
+<div class="field">
+    <input type="password" name="confirm_password" placeholder="Confirm Password" required
+           class="{{ errors.confirm_password is defined ? 'error-input' }}">
+    {% if errors.confirm_password is defined %}
+        <div class="error">{{ errors.confirm_password }}</div>
+    {% endif %}
+</div>
+
+{# ROLE #}
+<div class="field">
+    <select name="role">
+        <option value="ROLE_DJ"
+            {{ old.role|default('ROLE_DJ') == 'ROLE_DJ' ? 'selected' : '' }}>
+            DJ
+        </option>
+
+        <option value="ROLE_ADMIN"
+            {{ old.role|default('ROLE_DJ') == 'ROLE_ADMIN' ? 'selected' : '' }}>
+            Admin
+        </option>
+    </select>
+</div>
+
+{# ADMIN CODE #}
+<div class="field">
+    <input name="admin_code" placeholder="Admin code"
+           value="{{ old.admin_code|default('') }}"
+           class="{{ errors.admin_code is defined ? 'error-input' }}">
+    {% if errors.admin_code is defined %}
+        <div class="error">{{ errors.admin_code }}</div>
+    {% endif %}
+</div>
+
+{# STAGE NAME (REQUIRED) #}
+<div class="field">
+    <input name="stage_name" placeholder="DJ Name" required
+           value="{{ old.stage_name|default('') }}"
+           class="{{ errors.stage_name is defined ? 'error-input' }}">
+    {% if errors.stage_name is defined %}
+        <div class="error">{{ errors.stage_name }}</div>
+    {% endif %}
+</div>
+
+{# GENRE #}
+<div class="field">
+    <input name="genre" placeholder="Genre"
+           value="{{ old.genre|default('') }}">
+</div>
+
+{# PHONE (REQUIRED) #}
+<div class="field">
+    <input name="phone" placeholder="Phone" required
+           value="{{ old.phone|default('') }}"
+           class="{{ errors.phone is defined ? 'error-input' }}">
+    {% if errors.phone is defined %}
+        <div class="error">{{ errors.phone }}</div>
+    {% endif %}
+</div>
+
+{# PRICE #}
+<div class="field">
+    <input type="number" name="price" placeholder="Price"
+           value="{{ old.price|default('') }}"
+           class="{{ errors.price is defined ? 'error-input' }}">
+    {% if errors.price is defined %}
+        <div class="error">{{ errors.price }}</div>
+    {% endif %}
+</div>
+
+{# BIO #}
+<div class="field full">
+    <textarea name="bio">{{ old.bio|default('') }}</textarea>
+</div>
+
+{# AVATAR #}
+<div class="field full">
+    <input type="file" name="avatar">
+</div>
+
+</div>
+
+<button type="submit" class="btn">Register</button>
+
+</form>
+
+</div>
+</div>
+
+{# JS: HIDE ADMIN CODE WHEN NOT ADMIN #}
+<script>
+const roleSelect = document.querySelector('select[name="role"]');
+const adminField = document.querySelector('input[name="admin_code"]').closest('.field');
+
+function toggleAdminField() {
+    if (roleSelect.value === 'ROLE_ADMIN') {
+        adminField.style.display = 'block';
+    } else {
+        adminField.style.display = 'none';
+    }
+}
+
+toggleAdminField();
+roleSelect.addEventListener('change', toggleAdminField);
+</script>
+
+{% endblock %}

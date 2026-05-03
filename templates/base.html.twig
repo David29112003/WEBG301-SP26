@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}DJ Booking{% endblock %}</title>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎧</text></svg>">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: #111;
+            color: white;
+            align-items: center;
+        }
+
+        .logo a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links span {
+            margin-right: 10px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    {% block stylesheets %}{% endblock %}
+
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %}
+
+    {% set frankenphpHotReload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+    {% if frankenphpHotReload %}
+        <meta name="frankenphp-hot-reload:url" content="{{ frankenphpHotReload }}">
+        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+    {% endif %}
+</head>
+
+<body>
+
+<!-- NAVBAR GLOBAL -->
+<div class="navbar">
+
+    <!-- LOGO -->
+    <div class="logo">
+        <a href="/"> DJ Booking</a>
+    </div>
+
+    <!-- MENU -->
+    <div class="nav-links">
+
+        {% if app.user %}
+
+            <span>{{ app.user.email }}</span>
+
+            <!--  DJ DASHBOARD -->
+            {% if is_granted('ROLE_DJ') %}
+                <a href="{{ path('dj_dashboard') }}">Dashboard</a>
+            {% endif %}
+
+            <!--  ADMIN -->
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('admin_dashboard') }}">Admin</a>
+            {% endif %}
+
+            <!-- LOGOUT -->
+            <a href="{{ path('app_logout') }}">Logout</a>
+
+        {% else %}
+
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!--  CONTENT -->
+{% block body %}{% endblock %}
+
+</body>
+</html>

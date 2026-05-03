@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>DJ Booking</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: white;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo a {
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        nav a {
+            margin-left: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        nav span {
+            margin-right: 10px;
+            color: #ccc;
+        }
+
+        /* ✅ HERO FIX */
+        .hero {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+
+            background: url('{{ asset('uploads/69ecf3ace7fa7.jpg') }}') center/cover no-repeat;
+        }
+
+        /* ✅ chữ nổi hơn */
+        .hero h1 {
+            font-size: 50px;
+            margin-bottom: 20px;
+            text-shadow: 0 5px 30px rgba(0,0,0,0.9);
+        }
+
+        .hero p {
+            color: #cbd5f5;
+            margin-bottom: 30px;
+            text-shadow: 0 3px 20px rgba(0,0,0,0.8);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg,#4f46e5,#9333ea);
+            border-radius: 30px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .table-section {
+            padding: 60px 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0,0,0,0.6); /* ✅ nổi hơn trên ảnh */
+            backdrop-filter: blur(8px);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background: #4f46e5;
+        }
+
+        tr:nth-child(even) {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .btn-small {
+            padding: 6px 10px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .green { background: #16a34a; }
+        .red { background: #dc2626; }
+        .blue { background: #4f46e5; }
+
+        .empty {
+            padding: 30px;
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <a href="{{ path('app_home') }}">NØXLIS BOOKING EVENT</a>
+    </div>
+
+    <nav>
+        {% if app.user %}
+            <span>{{ app.user.email }}</span>
+
+            {% if 'ROLE_ADMIN' in app.user.roles %}
+                <a href="{{ path('admin_dashboard') }}">Admin</a>
+                <a href="{{ path('admin_users') }}">Users</a>
+                <a href="{{ path('admin_event_new') }}">+ Event</a>
+            {% else %}
+                <a href="{{ path('dj_dashboard') }}">Dashboard</a>
+            {% endif %}
+
+            <a href="{{ path('app_logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ path('app_login') }}">Login</a>
+            <a href="{{ path('app_register') }}">Register</a>
+        {% endif %}
+    </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <div>
+        <h1>WELLCOME TO NØXLIS BOOKING EVENT</h1>
+        <p>Manage your gigs, bookings and events in one place.</p>
+
+        {% if not app.user %}
+            <a href="{{ path('app_register') }}" class="btn">Start Free</a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- EVENTS -->
+{% if app.user %}
+<section class="table-section">
+    <h2>DJ Schedule</h2>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Date</th>
+
+            {% if 'ROLE_ADMIN' in app.user.roles %}
+                <th>DJ</th>
+                <th>Action</th>
+            {% else %}
+                <th>Status</th>
+                <th>Action</th>
+            {% endif %}
+        </tr>
+
+        {% for e in events %}
+        <tr>
+            <td>{{ e.title }}</td>
+            <td>{{ e.location }}</td>
+            <td>{{ e.eventDate|date('Y-m-d') }}</td>
+
+            {% if 'ROLE_ADMIN' in app.user.roles %}
+                <td>{{ e.dj ? e.dj.email : 'N/A' }}</td>
+                <td>
+                    <a href="{{ path('admin_event_edit', {id: e.id}) }}" class="btn-small blue">Edit</a>
+                    <a href="{{ path('admin_event_delete', {id: e.id}) }}" class="btn-small red"
+                       onclick="return confirm('Delete this event?')">Delete</a>
+                </td>
+            {% else %}
+                <td>{{ e.status }}</td>
+                <td>
+                    <a href="{{ path('dj_event_accept', {id: e.id}) }}" class="btn-small green">Accept</a>
+                    <a href="{{ path('dj_event_reject', {id: e.id}) }}" class="btn-small red">Reject</a>
+                </td>
+            {% endif %}
+        </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="empty">No events yet</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endif %}
+
+</body>
+</html>

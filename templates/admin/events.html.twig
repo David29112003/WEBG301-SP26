@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Events{% endblock %}
+
+{% block body %}
+
+<style>
+    body {
+        background: #0f172a;
+        color: white;
+        font-family: Arial;
+    }
+
+    .container {
+        padding: 40px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        margin: 0;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(135deg,#4f46e5,#9333ea);
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: center;
+    }
+
+    th {
+        background: #4f46e5;
+    }
+
+    tr:nth-child(even) {
+        background: rgba(255,255,255,0.03);
+    }
+
+    .actions a {
+        margin: 0 5px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: white;
+        font-size: 12px;
+    }
+
+    .edit {
+        background: #4f46e5;
+    }
+
+    .delete {
+        background: #dc2626;
+    }
+
+    .empty {
+        padding: 20px;
+        color: #aaa;
+    }
+</style>
+
+<div class="container">
+
+    <div class="header">
+        <h2>Manage Events</h2>
+        <a href="{{ path('admin_event_new') }}" class="btn">
+            + Add Event
+        </a>
+    </div>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Date</th>
+            <th>DJ</th>
+            <th>Action</th>
+        </tr>
+
+        {% for e in events %}
+        <tr>
+            <td>{{ e.title }}</td>
+            <td>{{ e.location }}</td>
+            <td>{{ e.eventDate|date('Y-m-d') }}</td>
+            <td>{{ e.dj ? e.dj.email : 'N/A' }}</td>
+
+            <td class="actions">
+                <a href="{{ path('admin_event_edit', {id: e.id}) }}" class="edit">
+                    Edit
+                </a>
+
+                <a href="{{ path('admin_event_delete', {id: e.id}) }}"
+                   class="delete"
+                   onclick="return confirm('Delete this event?')">
+                    Delete
+                </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5" class="empty">
+                No events yet
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+
+{% endblock %}

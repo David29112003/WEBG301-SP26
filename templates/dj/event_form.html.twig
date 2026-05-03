@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Event Form{% endblock %}
+
+{% block body %}
+
+<style>
+    body { background: #f3f4f6; font-family: Arial; }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        padding: 40px;
+    }
+
+    .card {
+        width: 500px;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        background: #4f46e5;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background: #4338ca;
+    }
+</style>
+
+<div class="container">
+
+    <div class="card">
+        <h2>{{ event is defined ? 'Edit Event' : 'Create Event' }}</h2>
+
+        <form method="post">
+
+            <input class="input" name="title" placeholder="Event Title"
+                   value="{{ event.title ?? '' }}" required>
+
+            <input class="input" name="location" placeholder="Location"
+                   value="{{ event.location ?? '' }}" required>
+
+            <input class="input" type="date" name="date"
+                   value="{{ event.eventDate ? event.eventDate|date('Y-m-d') : '' }}" required>
+
+            <input class="input" type="number" name="price" placeholder="Price"
+                   value="{{ event.price ?? '' }}" required>
+
+            <button class="btn">
+                {{ event is defined ? 'Update' : 'Create' }}
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Events{% endblock %}
+
+{% block body %}
+
+<style>
+    body { background: #f3f4f6; font-family: Arial; }
+
+    .container {
+        padding: 30px;
+    }
+
+    .header {
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background: #e5e7eb;
+    }
+
+    tr:not(:last-child) {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .btn {
+        padding: 6px 10px;
+        border-radius: 6px;
+        color: white;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    .green { background: #16a34a; }
+    .red { background: #dc2626; }
+</style>
+
+<div class="container">
+
+    <div class="header">
+        <h2>My Events</h2>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Date</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% if events is empty %}
+            <tr>
+                <td colspan="6">No events yet</td>
+            </tr>
+        {% else %}
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.location }}</td>
+                    <td>{{ event.eventDate|date('Y-m-d') }}</td>
+                    <td>${{ event.price }}</td>
+                    <td>{{ event.status }}</td>
+                    <td>
+                        {% if event.status == 'pending' %}
+                            <a href="{{ path('dj_event_accept', {id: event.id}) }}" class="btn green">Accept</a>
+                            <a href="{{ path('dj_event_reject', {id: event.id}) }}" class="btn red">Reject</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

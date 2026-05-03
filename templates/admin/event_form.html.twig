@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ event is defined ? 'Edit Event' : 'Create Event' }}
+{% endblock %}
+
+{% block body %}
+
+<style>
+    body {
+        background: #0f172a;
+        font-family: Arial;
+        color: white;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 60px auto;
+        padding: 30px;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    input::placeholder {
+        color: #ccc;
+    }
+
+    select option {
+        color: black;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        background: linear-gradient(135deg,#4f46e5,#9333ea);
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .back {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #aaa;
+        text-decoration: none;
+    }
+
+    .back:hover {
+        color: white;
+    }
+</style>
+
+<div class="container">
+
+    <h2>
+        {{ event is defined ? 'Edit Event' : 'Create Event' }}
+    </h2>
+
+    <form method="post">
+
+        <!-- TITLE -->
+        <input name="title"
+               placeholder="Event Title"
+               value="{{ event is defined ? event.title : '' }}"
+               required>
+
+        <!-- LOCATION -->
+        <input name="location"
+               placeholder="Location"
+               value="{{ event is defined ? event.location : '' }}"
+               required>
+
+        <!-- DATE -->
+        <input type="date"
+               name="date"
+               value="{{ event is defined and event.eventDate ? event.eventDate|date('Y-m-d') : '' }}"
+               required>
+
+        <!-- PRICE -->
+        <input type="number"
+               name="price"
+               placeholder="Price ($)"
+               value="{{ event is defined ? event.price : '' }}"
+               required>
+
+        <!-- DJ SELECT -->
+        <select name="dj_id" required>
+            <option value="">-- Select DJ --</option>
+
+            {% for u in djs %}
+                <option value="{{ u.id }}"
+                    {% if event is defined and event.dj and event.dj.id == u.id %}selected{% endif %}>
+                    {{ u.email }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <!-- SUBMIT -->
+        <button class="btn">
+            {{ event is defined ? 'Update Event' : 'Create Event' }}
+        </button>
+
+    </form>
+
+    <a href="{{ path('admin_events') }}" class="back">
+        ← Back to Events
+    </a>
+
+</div>
+
+{% endblock %}
